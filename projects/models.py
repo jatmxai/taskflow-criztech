@@ -42,6 +42,28 @@ class Project(models.Model):
         return self.total_tasks - self.completed_tasks
 
 
+class EmailPreference(models.Model):
+    """Per-user toggles for which events trigger an email notification."""
+
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="email_prefs"
+    )
+    enabled = models.BooleanField(default=True)
+    project_created = models.BooleanField(default=True)
+    project_deleted = models.BooleanField(default=True)
+    task_created = models.BooleanField(default=False)
+    task_completed = models.BooleanField(default=True)
+    task_deleted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"EmailPrefs<{self.user.username}>"
+
+    @classmethod
+    def for_user(cls, user):
+        prefs, _ = cls.objects.get_or_create(user=user)
+        return prefs
+
+
 class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
     parent = models.ForeignKey(

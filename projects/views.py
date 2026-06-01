@@ -11,9 +11,10 @@ from django.views.decorators.http import require_POST, require_http_methods
 from django.template.loader import render_to_string
 from django.db.models import Count, Q
 
-from .models import Project, Task
+from .models import Project, Task, EmailPreference
 from .forms import RegisterForm, ProjectForm, TaskForm
 from .parser import parse_task_input
+from .email_utils import notify
 
 
 def register(request):
@@ -118,6 +119,7 @@ def project_create(request):
         project = form.save(commit=False)
         project.user = request.user
         project.save()
+        notify(request.user, "project_created", project=project, name=project.name)
         if request.headers.get("HX-Request"):
             html = render_to_string(
                 "projects/_project_card.html", {"project": project}, request=request
@@ -149,7 +151,9 @@ def project_detail(request, pk):
 @require_POST
 def project_delete(request, pk):
     project = get_object_or_404(Project, pk=pk, user=request.user)
+    name = project.name
     project.delete()
+    notify(request.user, "project_deleted", name=name)
     messages.success(request, "Project deleted.")
     return redirect("index")
 
@@ -203,6 +207,7 @@ def task_add(request, project_pk):
         due_date=due_date,
         order=last_order,
     )
+    notify(request.user, "task_created", task=task, title=task.title)
 
     if request.headers.get("HX-Request"):
         html = render_to_string(
@@ -226,9 +231,19 @@ def task_toggle(request, pk):
     task = get_object_or_404(
         Task, pk=pk, project__user=request.user
     )
+    was_done = task.is_done
     task.is_done = not task.is_done
     task.completed_at = timezone.now() if task.is_done else None
     task.save()
+    if not was_done and task.is_done and task.parent is None:
+        notify(
+            request.user,
+            "task_completed",
+            task=task,
+            title=task.title,
+            project_progress=task.project.progress,
+            all_done=_all_done_celebrate(task.project),
+        )
 
     if request.headers.get("HX-Request"):
         html = render_to_string(
@@ -254,7 +269,11 @@ def task_toggle(request, pk):
 def task_delete(request, pk):
     task = get_object_or_404(Task, pk=pk, project__user=request.user)
     project = task.project
+    title = task.title
+    is_subtask = task.parent is not None
     task.delete()
+    if not is_subtask:
+        notify(request.user, "task_deleted", title=title, project_name=project.name)
     if request.headers.get("HX-Request"):
         progress_html = render_to_string(
             "projects/_progress.html", {"project": project}, request=request
@@ -346,6 +365,32 @@ def search(request):
             .select_related("project")[:20]
         )
     return render(request, "projects/_search.html", {"tasks": tasks, "query": query})
+
+
+@login_required
+def settings_view(request):
+    prefs = EmailPreference.for_user(request.user)
+    if request.method == "POST":
+        prefs.enabled = "enabled" in request.POST
+        prefs.project_created = "project_created" in request.POST
+        prefs.project_deleted = "project_deleted" in request.POST
+        prefs.task_created = "task_created" in request.POST
+        prefs.task_completed = "task_completed" in request.POST
+        prefs.task_deleted = "task_deleted" in request.POST
+        email = (request.POST.get("email") or "").strip()
+        if email and email != request.user.email:
+            request.user.email = email
+            request.user.save(update_fields=["email"])
+        prefs.save()
+        if request.headers.get("HX-Request"):
+            response = HttpResponse(status=204)
+            response["HX-Trigger"] = json.dumps(
+                {"showToast": {"message": "Settings saved!", "type": "success"}}
+            )
+            return response
+        messages.success(request, "Settings saved.")
+        return redirect("settings")
+    return render(request, "projects/settings.html", {"prefs": prefs})
 
 
 @login_required
