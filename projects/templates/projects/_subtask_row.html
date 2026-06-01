@@ -1,0 +1,19 @@
+<li id="sub-{{ sub.pk }}" class="flex items-center gap-2 py-1.5 group animate-fade-in">
+    <button hx-post="{% url 'subtask_toggle' sub.pk %}"
+            hx-target="#sub-{{ sub.pk }}"
+            hx-swap="outerHTML"
+            class="w-4 h-4 rounded border-[1.5px] flex items-center justify-center transition flex-shrink-0
+                   {% if sub.is_done %}bg-brand-600 border-brand-600{% else %}border-slate-300 dark:border-slate-600 hover:border-brand-500{% endif %}">
+        {% if sub.is_done %}
+        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        {% endif %}
+    </button>
+    <span class="text-xs flex-1 {% if sub.is_done %}line-through text-slate-400{% else %}text-slate-700 dark:text-slate-300{% endif %}">{{ sub.title }}</span>
+    <button hx-delete="{% url 'subtask_delete' sub.pk %}"
+            hx-target="#sub-{{ sub.pk }}"
+            hx-swap="outerHTML swap:300ms"
+            hx-on::before-request="document.getElementById('sub-{{ sub.pk }}').classList.add('fade-out')"
+            class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-600 transition">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+</li>

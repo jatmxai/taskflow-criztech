@@ -44,14 +44,27 @@ class Project(models.Model):
 
 class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
+    parent = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="subtasks"
+    )
     title = models.CharField(max_length=255)
     is_done = models.BooleanField(default=False)
     priority = models.CharField(max_length=10, default="medium", choices=PRIORITY_CHOICES)
     due_date = models.DateField(null=True, blank=True)
+    order = models.PositiveIntegerField(default=0, db_index=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ["is_done", "-created_at"]
+        ordering = ["is_done", "order", "-created_at"]
 
     def __str__(self):
         return self.title
+
+    @property
+    def subtask_progress(self):
+        total = self.subtasks.count()
+        if not total:
+            return None
+        done = self.subtasks.filter(is_done=True).count()
+        return {"total": total, "done": done, "percent": int(done / total * 100)}

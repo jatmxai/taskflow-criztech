@@ -2,22 +2,22 @@
     <div class="grid grid-cols-3 gap-4 mb-4">
         <div>
             <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Total</p>
-            <p class="text-xl font-bold tracking-tight text-slate-900 mt-1">{{ project.total_tasks }}</p>
+            <p class="text-xl font-bold tracking-tight mt-1">{{ project.total_tasks }}</p>
         </div>
         <div>
             <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Done</p>
-            <p class="text-xl font-bold tracking-tight text-slate-900 mt-1">{{ project.completed_tasks }}</p>
+            <p class="text-xl font-bold tracking-tight mt-1">{{ project.completed_tasks }}</p>
         </div>
         <div>
             <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Remaining</p>
-            <p class="text-xl font-bold tracking-tight text-slate-900 mt-1">{{ project.remaining_tasks }}</p>
+            <p class="text-xl font-bold tracking-tight mt-1">{{ project.remaining_tasks }}</p>
         </div>
     </div>
     <div class="flex items-center justify-between text-xs mb-2">
-        <span class="text-slate-600 font-medium">Overall progress</span>
-        <span class="font-semibold text-slate-900">{{ project.progress }}%</span>
+        <span class="text-slate-600 dark:text-slate-400 font-medium">Overall progress</span>
+        <span class="font-semibold">{{ project.progress }}%</span>
     </div>
-    <div class="relative w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+    <div class="relative w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
         <div class="absolute inset-y-0 left-0 rounded-full transition-all duration-700 ease-out"
              style="width: {{ project.progress }}%; background-color: {{ project.color }};"></div>
     </div>

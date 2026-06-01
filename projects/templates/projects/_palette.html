@@ -1,0 +1,61 @@
+{% if not query %}
+    <div class="p-3">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3 pb-2">Quick actions</p>
+        <a href="{% url 'today' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition group">
+            <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+            <span class="text-sm font-medium">Go to Today</span>
+        </a>
+        <a href="{% url 'index' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+            <div class="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-950 text-brand-600 flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></div>
+            <span class="text-sm font-medium">Go to Dashboard</span>
+        </a>
+    </div>
+    {% if projects %}
+    <div class="border-t border-slate-100 dark:border-slate-800 p-3">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3 pb-2">Recent projects</p>
+        {% for project in projects %}
+            <a href="{% url 'project_detail' project.pk %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background-color: {{ project.color }}1a; color: {{ project.color }};">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                </div>
+                <span class="text-sm flex-1 truncate">{{ project.name }}</span>
+                <span class="text-xs text-slate-400">{{ project.total_tasks }}</span>
+            </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% else %}
+    {% if projects or tasks %}
+        {% if projects %}
+            <div class="p-3">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3 pb-2">Projects</p>
+                {% for project in projects %}
+                    <a href="{% url 'project_detail' project.pk %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background-color: {{ project.color }}1a; color: {{ project.color }};">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                        </div>
+                        <span class="text-sm flex-1 truncate">{{ project.name }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if tasks %}
+            <div class="{% if projects %}border-t border-slate-100 dark:border-slate-800{% endif %} p-3">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3 pb-2">Tasks</p>
+                {% for task in tasks %}
+                    <a href="{% url 'project_detail' task.project.pk %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                        <div class="w-1.5 h-1.5 rounded-full" style="background-color: {{ task.project.color }};"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm truncate {% if task.is_done %}line-through text-slate-400{% endif %}">{{ task.title }}</p>
+                            <p class="text-xs text-slate-500">{{ task.project.name }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="p-12 text-center">
+            <p class="text-sm text-slate-500">No results for "<span class="font-medium">{{ query }}</span>"</p>
+        </div>
+    {% endif %}
+{% endif %}
