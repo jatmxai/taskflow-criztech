@@ -1,0 +1,20 @@
+{% if query %}
+    {% if tasks %}
+        <div class="border-t border-gray-200 mt-2 pt-2 max-h-80 overflow-y-auto">
+            {% for task in tasks %}
+                <a href="{% url 'project_detail' task.project.pk %}"
+                   class="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg transition">
+                    <div class="w-2 h-2 rounded-full flex-shrink-0" style="background-color: {{ task.project.color }}"></div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-gray-900 truncate {% if task.is_done %}line-through text-gray-400{% endif %}">
+                            {{ task.title }}
+                        </p>
+                        <p class="text-xs text-gray-500">{{ task.project.name }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-sm text-gray-500 px-3 py-2">No tasks found for "{{ query }}"</p>
+    {% endif %}
+{% endif %}

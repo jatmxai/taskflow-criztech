@@ -1,0 +1,10 @@
+<div id="progress-section" hx-swap-oob="true">
+    <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+        <span>{{ project.completed_tasks }} of {{ project.total_tasks }} tasks done</span>
+        <span class="font-semibold text-gray-900">{{ project.progress }}%</span>
+    </div>
+    <div class="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+        <div class="h-full transition-all duration-700 ease-out"
+             style="width: {{ project.progress }}%; background-color: {{ project.color }};"></div>
+    </div>
+</div>

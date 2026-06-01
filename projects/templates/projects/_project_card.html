@@ -1,0 +1,59 @@
+<div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition group"
+     x-data="{ menuOpen: false, confirmDelete: false }">
+    <div class="flex items-start justify-between mb-3">
+        <a href="{% url 'project_detail' project.pk %}" class="flex items-center gap-3 flex-1 min-w-0">
+            <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: {{ project.color }}"></div>
+            <h3 class="font-semibold text-gray-900 truncate">{{ project.name }}</h3>
+        </a>
+        <div class="relative" @click.outside="menuOpen = false">
+            <button @click="menuOpen = !menuOpen" class="p-1 rounded hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition">
+                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01"></path>
+                </svg>
+            </button>
+            <div x-show="menuOpen"
+                 x-cloak
+                 x-transition
+                 class="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
+                <form action="{% url 'project_archive' project.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                        {% if project.archived %}Unarchive{% else %}Archive{% endif %}
+                    </button>
+                </form>
+                <button @click="menuOpen = false; confirmDelete = true" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                    Delete
+                </button>
+            </div>
+        </div>
+
+        <div x-show="confirmDelete"
+             x-cloak
+             x-transition.opacity
+             class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+             @click.self="confirmDelete = false">
+            <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Delete project?</h3>
+                <p class="text-sm text-gray-500 mb-4">This will delete "{{ project.name }}" and all its tasks. This cannot be undone.</p>
+                <div class="flex gap-2 justify-end">
+                    <button @click="confirmDelete = false" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Cancel</button>
+                    <form action="{% url 'project_delete' project.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="{% url 'project_detail' project.pk %}" class="block">
+        <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+            <span>{{ project.completed_tasks }} of {{ project.total_tasks }} tasks</span>
+            <span class="font-medium">{{ project.progress }}%</span>
+        </div>
+        <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div class="h-full transition-all duration-500"
+                 style="width: {{ project.progress }}%; background-color: {{ project.color }};"></div>
+        </div>
+    </a>
+</div>

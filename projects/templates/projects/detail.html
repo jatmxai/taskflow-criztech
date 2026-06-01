@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }} · TaskFlow{% endblock %}
+{% block content %}
+<div class="space-y-6">
+
+    <div class="flex items-center gap-2 text-sm text-gray-500">
+        <a href="{% url 'index' %}" class="hover:text-gray-900">Dashboard</a>
+        <span>/</span>
+        <span class="text-gray-900 font-medium">{{ project.name }}</span>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-4 h-4 rounded-full" style="background-color: {{ project.color }}"></div>
+            <h1 class="text-2xl font-bold text-gray-900">{{ project.name }}</h1>
+        </div>
+
+        <div id="progress-section">
+            {% include "projects/_progress.html" with project=project %}
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Add a task</h2>
+        <form hx-post="{% url 'task_add' project.pk %}"
+              hx-target="#task-list"
+              hx-swap="beforeend"
+              hx-on::after-request="if(event.detail.successful) this.reset()"
+              class="flex flex-col sm:flex-row gap-2">
+            {% csrf_token %}
+            {{ form.title }}
+            {{ form.priority }}
+            {{ form.due_date }}
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+                Add
+            </button>
+        </form>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Tasks</h2>
+        </div>
+        <ul id="task-list" class="divide-y divide-gray-100">
+            {% for task in tasks %}
+                {% include "projects/_task_row.html" with task=task project=project %}
+            {% empty %}
+                <li class="px-6 py-12 text-center text-gray-500" id="empty-state">
+                    <div class="text-4xl mb-2">✨</div>
+                    <p>No tasks yet. Add your first task above!</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
