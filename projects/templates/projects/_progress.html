@@ -1,10 +1,24 @@
 <div id="progress-section" hx-swap-oob="true">
-    <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
-        <span>{{ project.completed_tasks }} of {{ project.total_tasks }} tasks done</span>
-        <span class="font-semibold text-gray-900">{{ project.progress }}%</span>
+    <div class="grid grid-cols-3 gap-4 mb-4">
+        <div>
+            <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Total</p>
+            <p class="text-xl font-bold tracking-tight text-slate-900 mt-1">{{ project.total_tasks }}</p>
+        </div>
+        <div>
+            <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Done</p>
+            <p class="text-xl font-bold tracking-tight text-slate-900 mt-1">{{ project.completed_tasks }}</p>
+        </div>
+        <div>
+            <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Remaining</p>
+            <p class="text-xl font-bold tracking-tight text-slate-900 mt-1">{{ project.remaining_tasks }}</p>
+        </div>
     </div>
-    <div class="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
-        <div class="h-full transition-all duration-700 ease-out"
+    <div class="flex items-center justify-between text-xs mb-2">
+        <span class="text-slate-600 font-medium">Overall progress</span>
+        <span class="font-semibold text-slate-900">{{ project.progress }}%</span>
+    </div>
+    <div class="relative w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+        <div class="absolute inset-y-0 left-0 rounded-full transition-all duration-700 ease-out"
              style="width: {{ project.progress }}%; background-color: {{ project.color }};"></div>
     </div>
 </div>

@@ -37,6 +37,10 @@ class Project(models.Model):
             return 0
         return int((self.completed_tasks / total) * 100)
 
+    @property
+    def remaining_tasks(self):
+        return self.total_tasks - self.completed_tasks
+
 
 class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")

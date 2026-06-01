@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_POST, require_http_methods
 from django.template.loader import render_to_string
 
+from django.db.models import Count, Q
+
 from .models import Project, Task
 from .forms import RegisterForm, ProjectForm, TaskForm
 
@@ -28,6 +30,12 @@ def register(request):
 def index(request):
     projects = Project.objects.filter(user=request.user, archived=False)
     archived_projects = Project.objects.filter(user=request.user, archived=True)
+    user_tasks = Task.objects.filter(project__user=request.user, project__archived=False)
+    total_tasks = user_tasks.count()
+    completed_tasks = user_tasks.filter(is_done=True).count()
+    overall_progress = (
+        int(completed_tasks / total_tasks * 100) if total_tasks else 0
+    )
     form = ProjectForm()
     return render(
         request,
@@ -35,6 +43,9 @@ def index(request):
         {
             "projects": projects,
             "archived_projects": archived_projects,
+            "total_tasks": total_tasks,
+            "completed_tasks": completed_tasks,
+            "overall_progress": overall_progress,
             "form": form,
         },
     )
