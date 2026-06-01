@@ -1,0 +1,13 @@
+{% extends "_error_base.html" %}
+{% block title %}Bad request{% endblock %}
+{% block code %}400 · Bad Request{% endblock %}
+{% block code_color %}text-amber-600{% endblock %}
+{% block ring_color %}bg-amber-200{% endblock %}
+{% block icon_bg %}bg-gradient-to-br from-amber-500 to-orange-600{% endblock %}
+{% block icon %}
+<svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+</svg>
+{% endblock %}
+{% block heading %}Bad request{% endblock %}
+{% block message %}Your request couldn't be processed. This usually means a malformed URL or expired session. Try refreshing or going back home.{% endblock %}

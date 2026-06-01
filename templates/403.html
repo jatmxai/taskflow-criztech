@@ -1,0 +1,13 @@
+{% extends "_error_base.html" %}
+{% block title %}Access denied{% endblock %}
+{% block code %}403 · Forbidden{% endblock %}
+{% block code_color %}text-amber-600{% endblock %}
+{% block ring_color %}bg-amber-200{% endblock %}
+{% block icon_bg %}bg-gradient-to-br from-amber-500 to-orange-600{% endblock %}
+{% block icon %}
+<svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+</svg>
+{% endblock %}
+{% block heading %}Access denied{% endblock %}
+{% block message %}You don't have permission to view this page. If you think this is a mistake, try signing in with a different account.{% endblock %}

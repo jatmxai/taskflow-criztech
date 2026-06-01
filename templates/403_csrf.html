@@ -1,0 +1,13 @@
+{% extends "_error_base.html" %}
+{% block title %}Session expired{% endblock %}
+{% block code %}403 · CSRF Verification Failed{% endblock %}
+{% block code_color %}text-amber-600{% endblock %}
+{% block ring_color %}bg-amber-200{% endblock %}
+{% block icon_bg %}bg-gradient-to-br from-amber-500 to-orange-600{% endblock %}
+{% block icon %}
+<svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+</svg>
+{% endblock %}
+{% block heading %}Your session expired{% endblock %}
+{% block message %}For your security, your session has timed out. Please go back, refresh the page, and try again.{% endblock %}

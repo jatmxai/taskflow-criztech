@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Error{% endblock %} · TaskFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        brand: { 50:'#eef2ff', 100:'#e0e7ff', 400:'#818cf8', 500:'#6366f1', 600:'#4f46e5', 700:'#4338ca', 800:'#3730a3' }
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { -webkit-font-smoothing: antialiased; font-feature-settings: "cv11", "ss01"; }
+        .bg-grid {
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .float { animation: float 4s ease-in-out infinite; }
+        @keyframes pulse-ring { 0% { transform: scale(0.95); opacity: 0.5; } 100% { transform: scale(1.4); opacity: 0; } }
+        .pulse-ring { animation: pulse-ring 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+    </style>
+</head>
+<body class="h-full bg-slate-50 font-sans antialiased relative overflow-hidden">
+    <div class="absolute inset-0 bg-grid opacity-50"></div>
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-brand-200 rounded-full filter blur-3xl opacity-30 -translate-y-1/2"></div>
+    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-200 rounded-full filter blur-3xl opacity-30 translate-y-1/2"></div>
+
+    <div class="relative min-h-screen flex flex-col">
+        <header class="px-6 py-5">
+            <a href="/" class="inline-flex items-center gap-2.5 group">
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-sm">
+                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                    </svg>
+                </div>
+                <span class="text-lg font-bold tracking-tight text-slate-900">TaskFlow</span>
+            </a>
+        </header>
+
+        <main class="flex-1 flex items-center justify-center px-6 py-12">
+            <div class="max-w-md text-center">
+                <div class="relative inline-flex items-center justify-center mb-8">
+                    <div class="absolute inset-0 rounded-full pulse-ring {% block ring_color %}bg-brand-200{% endblock %}"></div>
+                    <div class="relative w-24 h-24 rounded-full {% block icon_bg %}bg-gradient-to-br from-brand-500 to-brand-700{% endblock %} text-white flex items-center justify-center shadow-xl float">
+                        {% block icon %}{% endblock %}
+                    </div>
+                </div>
+
+                <p class="text-sm font-bold tracking-[0.2em] uppercase {% block code_color %}text-brand-600{% endblock %} mb-3">
+                    {% block code %}Error{% endblock %}
+                </p>
+                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">
+                    {% block heading %}Something went wrong{% endblock %}
+                </h1>
+                <p class="text-slate-600 text-base leading-relaxed mb-8">
+                    {% block message %}An unexpected error occurred. Please try again.{% endblock %}
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <a href="/" class="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-800 transition shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                        Back to home
+                    </a>
+                    <button onclick="history.back()" class="inline-flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-200 px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-50 transition shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        Go back
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="px-6 py-6 text-center">
+            <p class="text-xs text-slate-400">© 2026 TaskFlow · <a href="/" class="hover:text-slate-600 transition">Home</a></p>
+        </footer>
+    </div>
+</body>
+</html>
